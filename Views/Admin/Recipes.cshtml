@@ -1,0 +1,137 @@
+@model IEnumerable<YemekTarifleri.DTOs.RecipeDto>
+
+@{
+    ViewData["Title"] = "Tarif Yönetimi";
+}
+
+<div class="space-y-6">
+    <!-- Başlık ve Ekle Butonu -->
+    <div class="flex items-center justify-between">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-900">📋 Tarif Yönetimi</h1>
+            <p class="text-gray-600 mt-1">Tüm tarifleri yönetin, düzenleyin veya silin</p>
+        </div>
+        <div class="flex gap-3">
+            <a asp-action="CreateRecipe" class="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-lg transition-colors font-semibold">
+                + Yeni Tarif
+            </a>
+            <a asp-action="Logout" class="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg transition-colors font-semibold">
+                🚪 Çıkış Yap
+            </a>
+        </div>
+    </div>
+
+    <!-- Bilgi Kutusu -->
+    @if (!Model.Any())
+    {
+        <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 text-center">
+            <p class="text-yellow-800">Henüz tarif eklenmemiş. <a asp-action="CreateRecipe" class="font-semibold underline">Yeni tarif ekle</a></p>
+        </div>
+    }
+    else
+    {
+        <!-- Tarif Listesi Tablosu -->
+        <div class="bg-white rounded-lg shadow-md overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead class="bg-gray-100 border-b border-gray-200">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">Tarif Adı</th>
+                            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">Kategori</th>
+                            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">Hazırlama Süresi</th>
+                            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">Zorluk Seviyesi</th>
+                            <th class="px-6 py-3 text-center text-sm font-semibold text-gray-700">İşlemler</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200">
+                        @foreach (var tarif in Model)
+                        {
+                            <tr class="hover:bg-gray-50 transition-colors">
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center gap-3">
+                                        @if (!string.IsNullOrEmpty(tarif.ImagePath))
+                                        {
+                                            <img src="@tarif.ImagePath" alt="@tarif.Ad" class="w-10 h-10 object-cover rounded" />
+                                        }
+                                        else
+                                        {
+                                            <div class="w-10 h-10 bg-gray-300 rounded flex items-center justify-center text-gray-500">📷</div>
+                                        }
+                                        <div>
+                                            <p class="font-medium text-gray-900">@tarif.Ad</p>
+                                            <p class="text-sm text-gray-500">ID: @tarif.Id</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-block bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full text-sm font-medium">
+                                        @(tarif.Kategori ?? "Belirtilmemiş")
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="text-gray-700">@(tarif.HazirlamaSuresi.HasValue ? $"{tarif.HazirlamaSuresi} dakika" : "—")</span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    @if (!string.IsNullOrEmpty(tarif.ZorlukSeviyesi))
+                                    {
+                                        <span class="inline-block px-3 py-1 rounded text-sm font-medium
+                                            @switch(tarif.ZorlukSeviyesi)
+                                            {
+                                                case "Kolay":
+                                                    @("bg-green-100 text-green-800");
+                                                    break;
+                                                case "Orta":
+                                                    @("bg-yellow-100 text-yellow-800");
+                                                    break;
+                                                case "Zor":
+                                                    @("bg-red-100 text-red-800");
+                                                    break;
+                                                default:
+                                                    @("bg-gray-100 text-gray-800");
+                                                    break;
+                                            }">
+                                            @tarif.ZorlukSeviyesi
+                                        </span>
+                                    }
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex gap-2 justify-center">
+                                        <a asp-action="EditRecipe" asp-route-id="@tarif.Id" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded text-sm font-medium transition-colors">
+                                            ✏️ Düzenle
+                                        </a>
+                                        <a asp-action="DeleteRecipe" asp-route-id="@tarif.Id" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded text-sm font-medium transition-colors">
+                                            🗑️ Sil
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- İstatistikler -->
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-lg font-semibold text-gray-900 mb-4">İstatistikler</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-lg p-4">
+                    <p class="text-gray-600 text-sm font-medium">Toplam Tarif Sayısı</p>
+                    <p class="text-3xl font-bold text-emerald-700 mt-2">@Model.Count()</p>
+                </div>
+                <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-4">
+                    <p class="text-gray-600 text-sm font-medium">Kategoriler</p>
+                    <p class="text-3xl font-bold text-blue-700 mt-2">@Model.Select(t => t.Kategori).Distinct().Count()</p>
+                </div>
+                <div class="bg-gradient-to-br from-orange-50 to-orange-100 rounded-lg p-4">
+                    <p class="text-gray-600 text-sm font-medium">Ortalama Hazırlama Süresi</p>
+                    <p class="text-3xl font-bold text-orange-700 mt-2">
+                        @(Model.Where(t => t.HazirlamaSuresi.HasValue).Any() 
+                            ? $"{Model.Where(t => t.HazirlamaSuresi.HasValue).Average(t => t.HazirlamaSuresi)}'" 
+                            : "—")
+                    </p>
+                </div>
+            </div>
+        </div>
+    }
+</div>

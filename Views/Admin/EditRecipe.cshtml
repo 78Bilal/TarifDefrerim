@@ -1,0 +1,147 @@
+@model YemekTarifleri.DTOs.RecipeUpdateDto
+
+@{
+    ViewData["Title"] = "Tarifi Düzenle";
+}
+
+<div class="max-w-3xl mx-auto">
+    <!-- Başlık -->
+    <div class="mb-6">
+        <h1 class="text-3xl font-bold text-gray-900">✏️ Tarifi Düzenle</h1>
+        <p class="text-gray-600 mt-1">Tarif bilgilerini güncelleyin</p>
+    </div>
+
+    <!-- Form -->
+    <form method="post" enctype="multipart/form-data" class="bg-white rounded-lg shadow-md p-6 space-y-6">
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                <p class="text-red-800 font-semibold mb-2">Form içinde hata var:</p>
+                <ul class="list-disc list-inside space-y-1">
+                    @foreach (var modelState in ViewData.ModelState.Values)
+                    {
+                        @foreach (var error in modelState.Errors)
+                        {
+                            <li class="text-red-700 text-sm">@error.ErrorMessage</li>
+                        }
+                    }
+                </ul>
+            </div>
+        }
+
+        <input type="hidden" asp-for="Id" />
+
+        <div asp-validation-summary="ModelOnly" class="bg-red-50 border border-red-200 rounded-lg p-4 hidden"></div>
+
+        <!-- Tarif Adı -->
+        <div>
+            <label asp-for="Ad" class="block text-sm font-semibold text-gray-700 mb-2">Tarif Adı *</label>
+            <input asp-for="Ad" type="text" placeholder="örn: Kuru Fasulye Ş."
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent" />
+            <span asp-validation-for="Ad" class="text-red-600 text-sm mt-1"></span>
+        </div>
+
+        <!-- Açıklama -->
+        <div>
+            <label asp-for="Aciklama" class="block text-sm font-semibold text-gray-700 mb-2">Açıklama / Özet</label>
+            <textarea asp-for="Aciklama" rows="3" placeholder="Tarif hakkında kısa bir açıklama..."
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent resize-none"></textarea>
+            <span asp-validation-for="Aciklama" class="text-red-600 text-sm mt-1"></span>
+        </div>
+
+        <!-- Malzemeler -->
+        <div>
+            <label asp-for="Malzemeler" class="block text-sm font-semibold text-gray-700 mb-2">Malzemeler *</label>
+            <textarea asp-for="Malzemeler" rows="5" placeholder="Her malzemeyi yeni satırda yazın&#10;örn:&#10;- 2 bardak un&#10;- 1 yumurta&#10;- 1 çay kaşığı tuz"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent resize-vertical font-mono text-sm"></textarea>
+            <span asp-validation-for="Malzemeler" class="text-red-600 text-sm mt-1"></span>
+            <p class="text-gray-500 text-sm mt-1">💡 Tüm malzemeleri detaylı bir şekilde yazın (örn: miktarlar, ölçüler)</p>
+        </div>
+
+        <!-- Yapılış -->
+        <div>
+            <label asp-for="Yapilis" class="block text-sm font-semibold text-gray-700 mb-2">Yapılış Adımları *</label>
+            <textarea asp-for="Yapilis" rows="5" placeholder="Her adımı numaralandırarak yazın&#10;örn:&#10;1. Malzemeleri hazırlayın&#10;2. Karıştırıp mayalandırın&#10;3. Fırında pişirin"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent resize-vertical font-mono text-sm"></textarea>
+            <span asp-validation-for="Yapilis" class="text-red-600 text-sm mt-1"></span>
+            <p class="text-gray-500 text-sm mt-1">💡 Her adımı açık ve anlaşılır bir şekilde yazın</p>
+        </div>
+
+        <!-- Kategori -->
+        <div>
+            <label asp-for="Kategori" class="block text-sm font-semibold text-gray-700 mb-2">Kategori *</label>
+            <select asp-for="Kategori" asp-items="@new SelectList(ViewBag.Kategoriler)"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent">
+                <option value="">-- Kategori Seçin --</option>
+            </select>
+            <span asp-validation-for="Kategori" class="text-red-600 text-sm mt-1"></span>
+        </div>
+
+        <!-- İki Sütunlu Form Alanları -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Hazırlama Süresi -->
+            <div>
+                <label asp-for="HazirlamaSuresi" class="block text-sm font-semibold text-gray-700 mb-2">Hazırlama Süresi (dakika)</label>
+                <input asp-for="HazirlamaSuresi" type="number" placeholder="örn: 30"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent" />
+                <span asp-validation-for="HazirlamaSuresi" class="text-red-600 text-sm mt-1"></span>
+            </div>
+
+            <!-- Zorluk Seviyesi -->
+            <div>
+                <label asp-for="ZorlukSeviyesi" class="block text-sm font-semibold text-gray-700 mb-2">Zorluk Seviyesi *</label>
+                <select asp-for="ZorlukSeviyesi" asp-items="@new SelectList(ViewBag.ZorlukSeviyeleri)"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent">
+                    <option value="">-- Seçin --</option>
+                </select>
+                <span asp-validation-for="ZorlukSeviyesi" class="text-red-600 text-sm mt-1"></span>
+            </div>
+        </div>
+
+        <!-- Mevcut Görsel -->
+        @if (!string.IsNullOrEmpty(Model.ImagePath))
+        {
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Mevcut Görsel</label>
+                <div class="bg-gray-50 rounded-lg p-4 flex items-center gap-4">
+                    <img src="@Model.ImagePath" alt="@Model.Ad" class="w-24 h-24 object-cover rounded" />
+                    <div>
+                        <p class="text-gray-700 font-medium">Resim yüklü</p>
+                        <p class="text-gray-500 text-sm">Yeni bir resim yükleyerek değiştirebilirsiniz</p>
+                    </div>
+                </div>
+            </div>
+        }
+
+        <!-- Yeni Görsel Yükleme -->
+        <div>
+            <label for="imageFile" class="block text-sm font-semibold text-gray-700 mb-2">Tarif Görseli (Değiştirmek İçin Yükleyin)</label>
+            <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center cursor-pointer hover:border-emerald-500 transition-colors"
+                onclick="document.getElementById('imageFile').click()">
+                <div class="text-gray-600">
+                    <p class="text-lg">🖼️</p>
+                    <p class="font-medium">Resim yüklemek için tıklayın</p>
+                    <p class="text-sm text-gray-500">veya sürükleyip bırakın</p>
+                </div>
+                <input type="file" id="imageFile" name="imageFile" accept="image/*" class="hidden" />
+            </div>
+            <p class="text-gray-500 text-sm mt-2">📝 Desteklenen formatlar: JPG, PNG, GIF (Max: 5MB)</p>
+        </div>
+
+        <!-- Butonlar -->
+        <div class="flex gap-4 pt-4 border-t border-gray-200">
+            <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2 rounded-lg font-semibold transition-colors">
+                ✅ Değişiklikleri Kaydet
+            </button>
+            <a asp-action="Recipes" class="bg-gray-400 hover:bg-gray-500 text-white px-6 py-2 rounded-lg font-semibold transition-colors">
+                ❌ İptal
+            </a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

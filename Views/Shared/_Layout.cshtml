@@ -1,0 +1,78 @@
+﻿<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Yemek Tarifleri</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'emerald': {
+                            50: '#ecfdf5',
+                            100: '#d1fae5',
+                            200: '#a7f3d0',
+                            300: '#6ee7b7',
+                            400: '#34d399',
+                            500: '#10b981',
+                            600: '#059669',
+                            700: '#047857',
+                            800: '#065f46',
+                            900: '#064e3b',
+                        },
+                        'orange': {
+                            50: '#fff7ed',
+                            100: '#ffedd5',
+                            200: '#fed7aa',
+                            300: '#fdba74',
+                            400: '#fb923c',
+                            500: '#f97316',
+                            600: '#ea580c',
+                            700: '#c2410c',
+                            800: '#9a3412',
+                            900: '#7c2d12',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body class="bg-[#F9FAFB] min-h-screen flex flex-col">
+    <header class="bg-white shadow-sm">
+        <nav class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <a asp-controller="Tarif" asp-action="Index" class="text-2xl font-bold text-emerald-600 hover:text-emerald-700 transition-colors">
+                    🍳 Yemek Tarifleri
+                </a>
+                <div class="flex gap-4 items-center">
+                    <a asp-controller="Tarif" asp-action="Index" class="text-gray-700 hover:text-emerald-600 transition-colors font-medium">
+                        Ana Sayfa
+                    </a>
+                    <div class="border-l border-gray-300 h-6"></div>
+                    <a asp-controller="Admin" asp-action="Recipes" class="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-lg transition-colors font-medium">
+                        ⚙️ Admin Paneli
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </header>
+    
+    <main class="flex-grow container mx-auto px-4 py-8">
+        @RenderBody()
+    </main>
+
+    <footer class="bg-white border-t border-gray-200 mt-auto">
+        <div class="container mx-auto px-4 py-6 text-center text-gray-600">
+            &copy; 2026 MubilDesigns. Tüm hakları saklıdır.
+        </div>
+    </footer>
+    
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

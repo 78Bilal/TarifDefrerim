@@ -1,0 +1,120 @@
+@model YemekTarifleri.DTOs.RecipeDto
+
+@{
+    ViewData["Title"] = Model.Ad ?? "Tarif Detayı";
+}
+
+<div class="max-w-4xl mx-auto">
+    <a asp-action="Index" class="inline-flex items-center text-emerald-600 hover:text-emerald-700 mb-6 transition-colors">
+        <span>←</span>
+        <span class="ml-2">Geri Dön</span>
+    </a>
+    
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+        <!-- Görsel -->
+        <div class="h-96 bg-gradient-to-br from-emerald-100 to-orange-100 overflow-hidden">
+            @if (!string.IsNullOrEmpty(Model.ImagePath))
+            {
+                <img src="@Model.ImagePath" alt="@Model.Ad" class="w-full h-full object-cover">
+            }
+            else
+            {
+                <div class="w-full h-full flex items-center justify-center text-9xl">🍳</div>
+            }
+        </div>
+        
+        <!-- İçerik -->
+        <div class="p-8">
+            <div class="flex items-start justify-between mb-6">
+                <div>
+                    <h1 class="text-4xl font-bold text-gray-800 mb-4">@Model.Ad</h1>
+                    <div class="flex items-center gap-4 text-gray-600">
+                        @if (!string.IsNullOrEmpty(Model.Kategori))
+                        {
+                            <span class="px-4 py-2 bg-emerald-100 text-emerald-700 rounded-full text-sm font-semibold">
+                                📁 @Model.Kategori
+                            </span>
+                        }
+                        @if (Model.HazirlamaSuresi.HasValue)
+                        {
+                            <span class="px-4 py-2 bg-orange-100 text-orange-700 rounded-full text-sm font-semibold">
+                                ⏱️ @Model.HazirlamaSuresi dakika
+                            </span>
+                        }
+                        @if (!string.IsNullOrEmpty(Model.ZorlukSeviyesi))
+                        {
+                            var badgeColor = Model.ZorlukSeviyesi switch
+                            {
+                                "Kolay" => "bg-emerald-100 text-emerald-700",
+                                "Orta" => "bg-orange-100 text-orange-700",
+                                "Zor" => "bg-red-100 text-red-700",
+                                _ => "bg-gray-100 text-gray-700"
+                            };
+                            <span class="px-4 py-2 @badgeColor rounded-full text-sm font-semibold">
+                                @Model.ZorlukSeviyesi
+                            </span>
+                        }
+                    </div>
+                </div>
+            </div>
+            
+            @if (!string.IsNullOrEmpty(Model.Aciklama))
+            {
+                <div class="mb-8">
+                    <h2 class="text-2xl font-semibold text-gray-800 mb-3">Açıklama</h2>
+                    <p class="text-gray-600 leading-relaxed">@Model.Aciklama</p>
+                </div>
+            }
+            
+            <div class="grid md:grid-cols-2 gap-8 mb-8">
+                <div>
+                    <h2 class="text-2xl font-semibold text-gray-800 mb-4">Malzemeler</h2>
+                    <div class="bg-gray-50 rounded-lg p-6">
+                        <ul class="space-y-2">
+                            @if (!string.IsNullOrEmpty(Model.Malzemeler))
+                            {
+                                @foreach (var malzeme in Model.Malzemeler.Split('\n', StringSplitOptions.RemoveEmptyEntries))
+                                {
+                                    <li class="flex items-start">
+                                        <span class="text-emerald-600 mr-2">•</span>
+                                        <span class="text-gray-700">@malzeme.Trim()</span>
+                                    </li>
+                                }
+                            }
+                        </ul>
+                    </div>
+                </div>
+                
+                <div>
+                    <h2 class="text-2xl font-semibold text-gray-800 mb-4">Yapılış</h2>
+                    <div class="bg-orange-50 rounded-lg p-6">
+                        <ol class="space-y-3">
+                            @if (!string.IsNullOrEmpty(Model.Yapilis))
+                            {
+                                @foreach (var adim in Model.Yapilis.Split('\n', StringSplitOptions.RemoveEmptyEntries))
+                                {
+                                    <li class="flex items-start">
+                                        <span class="flex-shrink-0 w-6 h-6 bg-orange-500 text-white rounded-full flex items-center justify-center text-sm font-bold mr-3">@(Model.Yapilis.Split('\n', StringSplitOptions.RemoveEmptyEntries).ToList().IndexOf(adim) + 1)</span>
+                                        <span class="text-gray-700 leading-relaxed">@adim.Trim()</span>
+                                    </li>
+                                }
+                            }
+                        </ol>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flex gap-4 pt-6 border-t border-gray-200">
+                <a asp-action="Edit" asp-route-id="@Model.Id" 
+                   class="flex-1 bg-orange-500 hover:bg-orange-600 text-white text-center px-6 py-3 rounded-lg transition-colors font-medium">
+                    ✏️ Düzenle
+                </a>
+                <a asp-action="Delete" asp-route-id="@Model.Id" 
+                   class="flex-1 bg-red-500 hover:bg-red-600 text-white text-center px-6 py-3 rounded-lg transition-colors font-medium"
+                   onclick="return confirm('Bu tarifi silmek istediğinize emin misiniz?');">
+                    🗑️ Sil
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
